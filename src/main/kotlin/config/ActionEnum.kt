@@ -1,0 +1,5 @@
+package config
+
+enum class ActionEnum {
+    CONFIG, DEPLOY, BUILD, PUBLISH, PROMOTE, NUKE, ROLLOUT, START_BUILD, START_DEPLOY, START_PUSH
+}
