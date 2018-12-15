@@ -3,6 +3,7 @@ package utils
 import com.github.ajalt.clikt.output.TermUi.echo
 import config.EnvironmentEnum
 import config.ServiceEnum
+import kotlinx.coroutines.delay
 import kotlin.system.measureTimeMillis
 
 fun info(environment: EnvironmentEnum, service: ServiceEnum, action: String) =
@@ -18,8 +19,8 @@ suspend fun taskExecutor(
     name: String
 ): Boolean {
     val time = measureTimeMillis {
-        info(environment, service, "start $task $name")
-        kotlinx.coroutines.delay(delay)
+        info(environment, service, "started $task $name")
+        delay(delay)
     }
     info(environment, service, "finish $task $name in $time ms")
     return true

@@ -4,7 +4,9 @@ import com.github.ajalt.clikt.parameters.options.option
 import config.ActionEnum.*
 import config.EnvironmentEnum
 import config.ServiceEnum
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import service.MainService
 import utils.completionStatus
@@ -20,7 +22,9 @@ class Main : CliktCommand() {
     private val token: String by option(help = "Authorization Token").default("a9087as98d7as98d7s998")
 
     override fun run() {
-        runBlocking {
+        runBlocking(Dispatchers.Default) {
+            val job = Job()
+            //region Data parsing
             val serviceEnumList =
                 if (services.isEmpty()) ServiceEnum.values().toList()
                 else services.replace(" ", "").split(",")
@@ -28,33 +32,32 @@ class Main : CliktCommand() {
 
             val actionEnum = valueOf(action.toUpperCase())
             val environmentEnum = EnvironmentEnum.valueOf(environment.toUpperCase())
-
+            //endregion
             val time = measureTimeMillis {
-
-                for (service in serviceEnumList) {
-                    info(environmentEnum, service, "Started ${actionEnum.name}")
-                    val result = async {
-                        when (actionEnum) {
-                            CONFIG ->  client.config(service, environmentEnum, token)
-                            DEPLOY -> client.deploy(service, environmentEnum, token)
-                            BUILD -> client.build(service, environmentEnum, token)
-                            PUBLISH -> client.publish(service, environmentEnum, token)
-                            PROMOTE -> client.promote(service, environmentEnum, token)
-                            NUKE -> client.nuke(service, environmentEnum, token)
-                            ROLLOUT -> client.rollout(service, environmentEnum, token)
-                            START_BUILD -> client.startBuild(service, environmentEnum, token)
-                            START_DEPLOY -> client.startDeploy(service, environmentEnum, token)
-                            START_PUSH -> client.startPush(service, environmentEnum, token)
-                        }
+                serviceEnumList.map {
+                    launch(Dispatchers.IO + job) {
+                        info(environmentEnum, it, "Started ${actionEnum.name}")
+                        val result =
+                            when (actionEnum) {
+                                CONFIG -> client.config(it, environmentEnum, token)
+                                DEPLOY -> client.deploy(it, environmentEnum, token)
+                                BUILD -> client.build(it, environmentEnum, token)
+                                PUBLISH -> client.publish(it, environmentEnum, token)
+                                PROMOTE -> client.promote(it, environmentEnum, token)
+                                NUKE -> client.nuke(it, environmentEnum, token)
+                                ROLLOUT -> client.rollout(it, environmentEnum, token)
+                                START_BUILD -> client.startBuild(it, environmentEnum, token)
+                                START_DEPLOY -> client.startDeploy(it, environmentEnum, token)
+                                START_PUSH -> client.startPush(it, environmentEnum, token)
+                            }
+                        info(environmentEnum, it, "finished ${actionEnum.name} ${result.completionStatus()}")
                     }
-                    info(environmentEnum, service, "finished ${actionEnum.name} ${result.await().completionStatus()}")
                 }
             }
             echo("operation completed in $time milliseconds")
+            job.join()
         }
     }
-
-
 }
 
 fun main(args: Array<String>) = Main().main(args)
