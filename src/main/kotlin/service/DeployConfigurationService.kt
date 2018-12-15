@@ -2,8 +2,7 @@ package service
 
 import config.EnvironmentEnum
 import config.ServiceEnum
-import kotlinx.coroutines.delay
-import utils.info
+import utils.taskExecutor
 import kotlin.random.Random
 
 /**
@@ -13,32 +12,22 @@ class DeployConfigurationService : Operations {
     private val name = "deploy configuration"
 
     override suspend fun push(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "push $name")
-        delay(Random.nextLong(2000L))
-        return true
+        return taskExecutor(environment, "push", service, Random.nextLong(2000L), name)
     }
 
     override suspend fun process(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "process $name")
-        delay(Random.nextLong(5000L))
-        return true
+        return taskExecutor(environment, "process", service, Random.nextLong(2000L), name)
     }
 
     override suspend fun create(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "create $name")
-        delay(Random.nextLong(1000L))
-        return true
+        return taskExecutor(environment, "create", service, Random.nextLong(2000L), name)
     }
 
     override suspend fun delete(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "delete $name")
-        delay(Random.nextLong(500L))
-        return true
+        return taskExecutor(environment, "delete", service, Random.nextLong(2000L), name)
     }
 
     override suspend fun replace(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "replace $name")
-        delay(Random.nextLong(2000L))
-        return true
+        return taskExecutor(environment, "replace", service, Random.nextLong(2000L), name)
     }
 }

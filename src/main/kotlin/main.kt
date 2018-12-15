@@ -1,20 +1,20 @@
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.prompt
 import config.ActionEnum.*
 import config.EnvironmentEnum
 import config.ServiceEnum
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import service.MainService
-import kotlin.system.measureTimeMillis
-import kotlinx.coroutines.*
 import utils.completionStatus
 import utils.info
+import kotlin.system.measureTimeMillis
 
 class Main : CliktCommand() {
 
     private val client: MainService = MainService()
-    private val action: String by option(help = "action to commit").default("check")
+    private val action: String by option(help = "action to commit").default("rollout")
     private val environment: String by option(help = "Environment name").default("INT1")
     private val services: String by option(help = "Services to act on, comma separated").default("")
     private val token: String by option(help = "Authorization Token").default("a9087as98d7as98d7s998")
@@ -33,8 +33,7 @@ class Main : CliktCommand() {
 
                 for (service in serviceEnumList) {
                     info(environmentEnum, service, "Started ${actionEnum.name}")
-//                    echo(":: $environment - Performing $actionEnum for ${service.toString().toLowerCase()} service ::")
-                    val result = GlobalScope.async {
+                    val result = async {
                         when (actionEnum) {
                             CONFIG ->  client.config(service, environmentEnum, token)
                             DEPLOY -> client.deploy(service, environmentEnum, token)
@@ -49,7 +48,6 @@ class Main : CliktCommand() {
                         }
                     }
                     info(environmentEnum, service, "finished ${actionEnum.name} ${result.await().completionStatus()}")
-//                    echo(":: $environment - Finished $actionEnum for ${service.toString().toLowerCase()} service ${result.await().completionStatus()} ::")
                 }
             }
             echo("operation completed in $time milliseconds")

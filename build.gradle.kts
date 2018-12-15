@@ -14,6 +14,10 @@ repositories {
     jcenter()
 }
 
+application {
+    mainClassName = "Main"
+}
+
 dependencies {
     compile(kotlin("stdlib-jdk8"))
     compile("io.github.microutils:kotlin-logging:1.6.22")

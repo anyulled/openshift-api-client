@@ -2,33 +2,29 @@ package service
 
 import config.EnvironmentEnum
 import config.ServiceEnum
-import utils.info
+import utils.taskExecutor
+import kotlin.random.Random
 
-class ImageService: Operations {
+class ImageService : Operations {
     private val name = "image"
 
     override suspend fun push(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "push $name")
-        return true
+        return taskExecutor(environment, "push", service, Random.nextLong(2000L), name)
     }
 
     override suspend fun process(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "process $name")
-        return true
+        return taskExecutor(environment, "push", service, Random.nextLong(2500L), name)
     }
 
     override suspend fun create(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "create $name")
-        return true
+        return taskExecutor(environment, "push", service, Random.nextLong(1000L), name)
     }
 
     override suspend fun delete(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "delete $name")
-        return true
+        return taskExecutor(environment, "push", service, Random.nextLong(500L), name)
     }
 
     override suspend fun replace(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean {
-        info(environment, service, "replace $name")
-        return true
+        return taskExecutor(environment, "push", service, Random.nextLong(3500L), name)
     }
 }
