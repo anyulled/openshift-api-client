@@ -2,8 +2,6 @@ package service
 
 import config.EnvironmentEnum
 import config.ServiceEnum
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 /**
  * Main Service
@@ -20,45 +18,45 @@ class MainService(
 ) {
 
     suspend fun config(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) {
+//        withContext(Dispatchers.Default) {
         configMaps.push(service, environment, token) &&
                 secrets.push(service, environment, token)
-        }
+//        }
 
     suspend fun deploy(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) {
+//        withContext(Dispatchers.Default) {
             deployTemplate.push(service, environment, token) &&
                     deployTemplate.process(service, environment, token) &&
                     deployConfiguration.create(service, environment, token)
-        }
+//        }
 
     suspend fun build(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) {
+//        withContext(Dispatchers.Default) {
             buildTemplate.push(service, environment, token) &&
                     buildTemplate.process(service, environment, token) &&
                     buildConfiguration.create(service, environment, token)
-        }
+//        }
 
     suspend fun publish(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) {
+//        withContext(Dispatchers.Default) {
             configMaps.push(service, environment, token) &&
                     secrets.push(service, environment, token) &&
                     buildTemplate.push(service, environment, token) &&
                     buildTemplate.process(service, environment, token) &&
                     buildConfiguration.create(service, environment, token)
-        }
+//        }
 
     suspend fun promote(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) {
+//        withContext(Dispatchers.Default) {
             configMaps.push(service, environment, token) &&
                     secrets.push(service, environment, token) &&
                     image.push(service, environment, token) &&
                     image.process(service, environment, token) &&
                     promotion.push(service, environment, token)
-        }
+//        }
 
     suspend fun nuke(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) {
+//        withContext(Dispatchers.Default) {
             configMaps.delete(service, environment, token) &&
                     secrets.delete(service, environment, token) &&
                     buildTemplate.delete(service, environment, token) &&
@@ -67,10 +65,10 @@ class MainService(
                     deployConfiguration.delete(service, environment, token) &&
                     image.delete(service, environment, token) &&
                     promotion.delete(service, environment, token)
-        }
+//        }
 
     suspend fun rollout(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) {
+//        withContext(Dispatchers.Default) {
             nuke(service, environment, token) &&
                     secrets.push(service, environment, token) &&
                     buildTemplate.push(service, environment, token) &&
@@ -79,14 +77,20 @@ class MainService(
                     deployTemplate.push(service, environment, token) &&
                     deployTemplate.process(service, environment, token) &&
                     deployConfiguration.create(service, environment, token)
-        }
+//        }
 
     suspend fun startBuild(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) { buildConfiguration.start(service, environment, token) }
+//        withContext(Dispatchers.Default) {
+        buildConfiguration.start(service, environment, token)
+//        }
 
     suspend fun startDeploy(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) { deployConfiguration.start(service, environment, token) }
+//        withContext(Dispatchers.Default) {
+        deployConfiguration.start(service, environment, token)
+//        }
 
     suspend fun startPush(service: ServiceEnum, environment: EnvironmentEnum, token: String): Boolean =
-        withContext(Dispatchers.Default) { image.start(service, environment, token) }
+//        withContext(Dispatchers.Default) {
+        image.start(service, environment, token)
+//        }
 }
