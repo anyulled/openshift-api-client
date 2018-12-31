@@ -6,8 +6,8 @@ import config.ActionEnum
 import config.ActionEnum.*
 import config.EnvironmentEnum
 import config.ServiceEnum
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import service.MainService
@@ -37,11 +37,10 @@ class Main : CliktCommand() {
     //endregion
 
     override fun run() {
-        runBlocking(Dispatchers.Default) {
-            val job = Job()
+        runBlocking {
             val time = measureTimeMillis {
                 services.map {
-                    launch(Dispatchers.IO + job) {
+                    launch(Dispatchers.Default + CoroutineName(it.serviceName)) {
                         info(environment, it, "Started ${action.name}")
                         val result =
                             when (action) {
@@ -60,8 +59,6 @@ class Main : CliktCommand() {
                     }
                 }
             }
-            echo("operation completed in $time milliseconds")
-            job.join()
         }
     }
 }

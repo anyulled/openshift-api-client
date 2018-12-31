@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlin.system.measureTimeMillis
 
 fun info(environment: EnvironmentEnum, service: ServiceEnum, action: String) =
-    echo("[${Thread.currentThread().name}] $environment - ${action.capitalize()} for ${service.toString().toLowerCase()}")
+    echo("[${Thread.currentThread().name}]         $environment - ${action.capitalize()} for ${service.toString().toLowerCase()}")
 
 fun Boolean.completionStatus(): String = if (this) "successfully" else "with errors"
 
