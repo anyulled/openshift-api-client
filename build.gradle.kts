@@ -20,7 +20,7 @@ application {
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
-    compile("io.github.microutils:kotlin-logging:1.12.5")
+    compile("io.github.microutils:kotlin-logging:2.0.11")
     implementation("com.github.ajalt:clikt:2.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
 }
