@@ -22,7 +22,7 @@ dependencies {
     compile(kotlin("stdlib-jdk8"))
     compile("io.github.microutils:kotlin-logging:3.0.5")
     implementation("com.github.ajalt:clikt:2.8.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
 }
 
 tasks.withType<KotlinCompile> {
