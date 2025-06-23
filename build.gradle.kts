@@ -2,7 +2,7 @@ import com.sun.org.apache.bcel.internal.Repository
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.1.21"
+    kotlin("jvm") version "2.2.0"
     application
 }
 
